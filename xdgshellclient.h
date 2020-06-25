@@ -252,7 +252,7 @@ private:
     void initialize();
 
     KWaylandServer::XdgPopupInterface *m_shellSurface;
-    bool m_haveExplicitGrab = false;
+    QPointer<KWaylandServer::SeatInterface> m_grabSeat;
 };
 
 } // namespace KWin
