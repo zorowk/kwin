@@ -31,6 +31,8 @@
 #include <KWaylandServer/xdgdecoration_v1_interface.h>
 #include <KWaylandServer/xdgshell_interface.h>
 
+#include "grab_priorities.h"
+
 using namespace KWaylandServer;
 
 namespace KWin
@@ -1726,7 +1728,7 @@ bool XdgPopupClient::hasPopupGrab() const
     if (m_grabSeat.isNull()) {
         return false;
     }
-    return m_grabSeat->grabHandler<XdgPopupGrab>()->toplevelPopup() == m_shellSurface;
+    return m_grabSeat->grabHandler<XdgPopupGrab, GrabPriorities::XdgPopup>()->toplevelPopup() == m_shellSurface;
 }
 
 void XdgPopupClient::popupDone()
@@ -1984,7 +1986,7 @@ void XdgPopupClient::handleGrabRequested(SeatInterface *seat, quint32 serial)
 {
     Q_UNUSED(serial)
     m_grabSeat = seat;
-    seat->grabHandler<XdgPopupGrab>()->grabPopup(m_shellSurface);
+    seat->grabHandler<XdgPopupGrab, GrabPriorities::XdgPopup>()->grabPopup(m_shellSurface);
 }
 
 void XdgPopupClient::initialize()
