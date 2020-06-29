@@ -4708,7 +4708,7 @@ bool X11Client::doStartMoveResize()
     if (!pointerGrab.isNull() && pointerGrab->status == XCB_GRAB_STATUS_SUCCESS) {
         has_grab = true;
     }
-    if (!has_grab && grabXKeyboard(frameId()))
+    if (grabXKeyboard(frameId()))
         has_grab = move_resize_has_keyboard_grab = true;
     if (!has_grab) { // at least one grab is necessary in order to be able to finish move/resize
         m_moveResizeGrabWindow.reset();
