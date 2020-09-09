@@ -182,6 +182,11 @@ void XdgPopup::xdg_popup_configure(int32_t x, int32_t y, int32_t width, int32_t 
     emit configureRequested(QRect(x, y, width, height));
 }
 
+void XdgPopup::xdg_popup_popup_done()
+{
+    emit doneReceived();
+}
+
 static struct {
     ConnectionThread *connection = nullptr;
     EventQueue *queue = nullptr;

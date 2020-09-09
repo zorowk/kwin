@@ -200,9 +200,11 @@ public:
 
 Q_SIGNALS:
     void configureRequested(const QRect &rect);
+    void doneReceived();
 
 protected:
     void xdg_popup_configure(int32_t x, int32_t y, int32_t width, int32_t height) override;
+    void xdg_popup_popup_done() override;
 
 private:
     QScopedPointer<XdgSurface> m_xdgSurface;

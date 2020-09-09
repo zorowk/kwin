@@ -200,7 +200,7 @@ void PointerInputTest::testWarpingUpdatesFocus()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -248,7 +248,7 @@ void PointerInputTest::testWarpingGeneratesPointerMotion()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -288,7 +288,7 @@ void PointerInputTest::testWarpingDuringFilter()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -331,7 +331,7 @@ void PointerInputTest::testUpdateFocusAfterScreenChange()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface, QSize(1280, 1024));
     QVERIFY(clientAddedSpy.wait());
@@ -427,7 +427,7 @@ void PointerInputTest::testModifierClickUnrestrictedMove()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -494,7 +494,7 @@ void PointerInputTest::testModifierClickUnrestrictedMoveGlobalShortcutsDisabled(
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -567,7 +567,7 @@ void PointerInputTest::testModifierScrollOpacity()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -626,7 +626,7 @@ void PointerInputTest::testModifierScrollOpacityGlobalShortcutsDisabled()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -676,7 +676,7 @@ void  PointerInputTest::testScrollAction()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface1 = Test::createSurface(m_compositor);
     QVERIFY(surface1);
-    XdgShellSurface *shellSurface1 = Test::createXdgShellStableSurface(surface1, surface1);
+    Test::XdgToplevel *shellSurface1 = Test::createXdgToplevelSurface(surface1, surface1);
     QVERIFY(shellSurface1);
     render(surface1);
     QVERIFY(clientAddedSpy.wait());
@@ -684,7 +684,7 @@ void  PointerInputTest::testScrollAction()
     QVERIFY(window1);
     Surface *surface2 = Test::createSurface(m_compositor);
     QVERIFY(surface2);
-    XdgShellSurface *shellSurface2 = Test::createXdgShellStableSurface(surface2, surface2);
+    Test::XdgToplevel *shellSurface2 = Test::createXdgToplevelSurface(surface2, surface2);
     QVERIFY(shellSurface2);
     render(surface2);
     QVERIFY(clientAddedSpy.wait());
@@ -736,7 +736,7 @@ void PointerInputTest::testFocusFollowsMouse()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface1 = Test::createSurface(m_compositor);
     QVERIFY(surface1);
-    XdgShellSurface *shellSurface1 = Test::createXdgShellStableSurface(surface1, surface1);
+    Test::XdgToplevel *shellSurface1 = Test::createXdgToplevelSurface(surface1, surface1);
     QVERIFY(shellSurface1);
     render(surface1, QSize(800, 800));
     QVERIFY(clientAddedSpy.wait());
@@ -744,7 +744,7 @@ void PointerInputTest::testFocusFollowsMouse()
     QVERIFY(window1);
     Surface *surface2 = Test::createSurface(m_compositor);
     QVERIFY(surface2);
-    XdgShellSurface *shellSurface2 = Test::createXdgShellStableSurface(surface2, surface2);
+    Test::XdgToplevel *shellSurface2 = Test::createXdgToplevelSurface(surface2, surface2);
     QVERIFY(shellSurface2);
     render(surface2, QSize(800, 800));
     QVERIFY(clientAddedSpy.wait());
@@ -822,7 +822,7 @@ void PointerInputTest::testMouseActionInactiveWindow()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface1 = Test::createSurface(m_compositor);
     QVERIFY(surface1);
-    XdgShellSurface *shellSurface1 = Test::createXdgShellStableSurface(surface1, surface1);
+    Test::XdgToplevel *shellSurface1 = Test::createXdgToplevelSurface(surface1, surface1);
     QVERIFY(shellSurface1);
     render(surface1, QSize(800, 800));
     QVERIFY(clientAddedSpy.wait());
@@ -830,7 +830,7 @@ void PointerInputTest::testMouseActionInactiveWindow()
     QVERIFY(window1);
     Surface *surface2 = Test::createSurface(m_compositor);
     QVERIFY(surface2);
-    XdgShellSurface *shellSurface2 = Test::createXdgShellStableSurface(surface2, surface2);
+    Test::XdgToplevel *shellSurface2 = Test::createXdgToplevelSurface(surface2, surface2);
     QVERIFY(shellSurface2);
     render(surface2, QSize(800, 800));
     QVERIFY(clientAddedSpy.wait());
@@ -912,7 +912,7 @@ void PointerInputTest::testMouseActionActiveWindow()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface1 = Test::createSurface(m_compositor);
     QVERIFY(surface1);
-    XdgShellSurface *shellSurface1 = Test::createXdgShellStableSurface(surface1, surface1);
+    Test::XdgToplevel *shellSurface1 = Test::createXdgToplevelSurface(surface1, surface1);
     QVERIFY(shellSurface1);
     render(surface1, QSize(800, 800));
     QVERIFY(clientAddedSpy.wait());
@@ -922,7 +922,7 @@ void PointerInputTest::testMouseActionActiveWindow()
     QVERIFY(window1DestroyedSpy.isValid());
     Surface *surface2 = Test::createSurface(m_compositor);
     QVERIFY(surface2);
-    XdgShellSurface *shellSurface2 = Test::createXdgShellStableSurface(surface2, surface2);
+    Test::XdgToplevel *shellSurface2 = Test::createXdgToplevelSurface(surface2, surface2);
     QVERIFY(shellSurface2);
     render(surface2, QSize(800, 800));
     QVERIFY(clientAddedSpy.wait());
@@ -994,7 +994,7 @@ void PointerInputTest::testCursorImage()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -1095,7 +1095,7 @@ void PointerInputTest::testEffectOverrideCursorImage()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -1171,7 +1171,7 @@ void PointerInputTest::testPopup()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -1189,17 +1189,19 @@ void PointerInputTest::testPopup()
     QVERIFY(buttonStateChangedSpy.wait());
 
     // now create the popup surface
-    XdgPositioner positioner(QSize(100, 50), QRect(0, 0, 80, 20));
-    positioner.setAnchorEdge(Qt::BottomEdge | Qt::RightEdge);
-    positioner.setGravity(Qt::BottomEdge | Qt::RightEdge);
+    QScopedPointer<Test::XdgPositioner> positioner(Test::createXdgPositioner());
+    positioner->set_size(100, 50);
+    positioner->set_anchor_rect(0, 0, 80, 20);
+    positioner->set_anchor(Test::XdgPositioner::anchor_bottom_right);
+    positioner->set_gravity(Test::XdgPositioner::gravity_bottom_right);
     Surface *popupSurface = Test::createSurface(m_compositor);
     QVERIFY(popupSurface);
-    XdgShellPopup *popupShellSurface = Test::createXdgShellStablePopup(popupSurface, shellSurface, positioner);
+    Test::XdgPopup *popupShellSurface = Test::createXdgPopupSurface(popupSurface, shellSurface->xdgSurface(), positioner.data());
     QVERIFY(popupShellSurface);
-    QSignalSpy popupDoneSpy(popupShellSurface, &XdgShellPopup::popupDone);
-    QVERIFY(popupDoneSpy.isValid());
-    popupShellSurface->requestGrab(Test::waylandSeat(), 0); // FIXME: Serial.
-    render(popupSurface, positioner.initialSize());
+    QSignalSpy doneReceivedSpy(popupShellSurface, &Test::XdgPopup::doneReceived);
+    QVERIFY(doneReceivedSpy.isValid());
+    popupShellSurface->grab(*Test::waylandSeat(), 0); // FIXME: Serial.
+    render(popupSurface, QSize(100, 50));
     QVERIFY(clientAddedSpy.wait());
     auto popupClient = clientAddedSpy.last().first().value<AbstractClient *>();
     QVERIFY(popupClient);
@@ -1221,10 +1223,10 @@ void PointerInputTest::testPopup()
     Cursors::self()->mouse()->setPos(popupClient->frameGeometry().bottomRight() + QPoint(2, 2));
     QVERIFY(leftSpy.wait());
     QCOMPARE(leftSpy.count(), 2);
-    QVERIFY(popupDoneSpy.isEmpty());
+    QVERIFY(doneReceivedSpy.isEmpty());
     // now click, should trigger popupDone
     kwinApp()->platform()->pointerButtonPressed(BTN_LEFT, timestamp++);
-    QVERIFY(popupDoneSpy.wait());
+    QVERIFY(doneReceivedSpy.wait());
     kwinApp()->platform()->pointerButtonReleased(BTN_LEFT, timestamp++);
 }
 
@@ -1252,7 +1254,7 @@ void PointerInputTest::testDecoCancelsPopup()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
 
     auto deco = Test::waylandServerSideDecoration()->create(surface, surface);
@@ -1280,17 +1282,19 @@ void PointerInputTest::testDecoCancelsPopup()
     QVERIFY(buttonStateChangedSpy.wait());
 
     // now create the popup surface
-    XdgPositioner positioner(QSize(100, 50), QRect(0, 0, 80, 20));
-    positioner.setAnchorEdge(Qt::BottomEdge | Qt::RightEdge);
-    positioner.setGravity(Qt::BottomEdge | Qt::RightEdge);
+    QScopedPointer<Test::XdgPositioner> positioner(Test::createXdgPositioner());
+    positioner->set_size(100, 50);
+    positioner->set_anchor_rect(0, 0, 80, 20);
+    positioner->set_anchor(Test::XdgPositioner::anchor_bottom_right);
+    positioner->set_gravity(Test::XdgPositioner::gravity_bottom_right);
     Surface *popupSurface = Test::createSurface(m_compositor);
     QVERIFY(popupSurface);
-    XdgShellPopup *popupShellSurface = Test::createXdgShellStablePopup(popupSurface, shellSurface, positioner);
+    Test::XdgPopup *popupShellSurface = Test::createXdgPopupSurface(popupSurface, shellSurface->xdgSurface(), positioner.data());
     QVERIFY(popupShellSurface);
-    QSignalSpy popupDoneSpy(popupShellSurface, &XdgShellPopup::popupDone);
-    QVERIFY(popupDoneSpy.isValid());
-    popupShellSurface->requestGrab(Test::waylandSeat(), 0); // FIXME: Serial.
-    render(popupSurface, positioner.initialSize());
+    QSignalSpy doneReceivedSpy(popupShellSurface, &Test::XdgPopup::doneReceived);
+    QVERIFY(doneReceivedSpy.isValid());
+    popupShellSurface->grab(*Test::waylandSeat(), 0); // FIXME: Serial.
+    render(popupSurface, QSize(100, 50));
     QVERIFY(clientAddedSpy.wait());
     auto popupClient = clientAddedSpy.last().first().value<AbstractClient *>();
     QVERIFY(popupClient);
@@ -1304,7 +1308,7 @@ void PointerInputTest::testDecoCancelsPopup()
     Cursors::self()->mouse()->setPos(window->frameGeometry().center().x(), window->y() + (window->height() - window->clientSize().height()) / 2);
 
     kwinApp()->platform()->pointerButtonPressed(BTN_RIGHT, timestamp++);
-    QVERIFY(popupDoneSpy.wait());
+    QVERIFY(doneReceivedSpy.wait());
     kwinApp()->platform()->pointerButtonReleased(BTN_RIGHT, timestamp++);
 }
 
@@ -1329,7 +1333,7 @@ void PointerInputTest::testWindowUnderCursorWhileButtonPressed()
     QVERIFY(clientAddedSpy.isValid());
     Surface *surface = Test::createSurface(m_compositor);
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     render(surface);
     QVERIFY(clientAddedSpy.wait());
@@ -1345,14 +1349,16 @@ void PointerInputTest::testWindowUnderCursorWhileButtonPressed()
     kwinApp()->platform()->pointerButtonPressed(BTN_LEFT, timestamp++);
 
     // now create a second window as transient
-    XdgPositioner positioner(QSize(99, 49), QRect(0, 0, 1, 1));
-    positioner.setAnchorEdge(Qt::BottomEdge | Qt::RightEdge);
-    positioner.setGravity(Qt::BottomEdge | Qt::RightEdge);
+    QScopedPointer<Test::XdgPositioner> positioner(Test::createXdgPositioner());
+    positioner->set_size(99, 49);
+    positioner->set_anchor_rect(0, 0, 1, 1);
+    positioner->set_anchor(Test::XdgPositioner::anchor_bottom_right);
+    positioner->set_gravity(Test::XdgPositioner::gravity_bottom_right);
     Surface *popupSurface = Test::createSurface(m_compositor);
     QVERIFY(popupSurface);
-    XdgShellPopup *popupShellSurface = Test::createXdgShellStablePopup(popupSurface, shellSurface, positioner);
+    Test::XdgPopup *popupShellSurface = Test::createXdgPopupSurface(popupSurface, shellSurface->xdgSurface(), positioner.data());
     QVERIFY(popupShellSurface);
-    render(popupSurface, positioner.initialSize());
+    render(popupSurface, QSize(99, 49));
     QVERIFY(clientAddedSpy.wait());
     auto popupClient = clientAddedSpy.last().first().value<AbstractClient *>();
     QVERIFY(popupClient);
@@ -1491,7 +1497,7 @@ void PointerInputTest::testResizeCursor()
     using namespace KWayland::Client;
     QScopedPointer<Surface> surface(Test::createSurface());
     QVERIFY(!surface.isNull());
-    QScopedPointer<XdgShellSurface> shellSurface(Test::createXdgShellStableSurface(surface.data()));
+    QScopedPointer<Test::XdgToplevel> shellSurface(Test::createXdgToplevelSurface(surface.data()));
     QVERIFY(!shellSurface.isNull());
     AbstractClient *c = Test::renderAndWaitForShown(surface.data(), QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -1561,7 +1567,7 @@ void PointerInputTest::testMoveCursor()
     using namespace KWayland::Client;
     QScopedPointer<Surface> surface(Test::createSurface());
     QVERIFY(!surface.isNull());
-    QScopedPointer<XdgShellSurface> shellSurface(Test::createXdgShellStableSurface(surface.data()));
+    QScopedPointer<Test::XdgToplevel> shellSurface(Test::createXdgToplevelSurface(surface.data()));
     QVERIFY(!shellSurface.isNull());
     AbstractClient *c = Test::renderAndWaitForShown(surface.data(), QSize(100, 50), Qt::blue);
     QVERIFY(c);
