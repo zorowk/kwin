@@ -788,7 +788,7 @@ XdgToplevel *createXdgToplevelSurface(Surface *surface, QObject *parent, Creatio
         return nullptr;
     }
 
-    XdgSurface *xdgSurface = new XdgSurface(shell, surface, parent);
+    XdgSurface *xdgSurface = new XdgSurface(shell, surface);
     XdgToplevel *xdgToplevel = new XdgToplevel(xdgSurface, parent);
 
     if (configureMode == CreationSetup::CreateAndConfigure) {
@@ -820,7 +820,7 @@ XdgPopup *createXdgPopupSurface(Surface *surface, XdgSurface *parentSurface, Xdg
         return nullptr;
     }
 
-    XdgSurface *xdgSurface = new XdgSurface(shell, surface, parent);
+    XdgSurface *xdgSurface = new XdgSurface(shell, surface);
     XdgPopup *xdgPopup = new XdgPopup(xdgSurface, parentSurface, positioner, parent);
 
     if (configureMode == CreationSetup::CreateAndConfigure) {
