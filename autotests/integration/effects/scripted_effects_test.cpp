@@ -35,7 +35,6 @@
 #include <KWayland/Client/registry.h>
 #include <KWayland/Client/slide.h>
 #include <KWayland/Client/surface.h>
-#include <KWayland/Client/xdgshell.h>
 
 using namespace KWin;
 using namespace std::chrono_literals;
@@ -200,9 +199,9 @@ void ScriptedEffectsTest::testEffectsHandler()
     using namespace KWayland::Client;
     auto *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    auto *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    auto *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
-    shellSurface->setTitle("WindowA");
+    shellSurface->set_title("WindowA");
     auto *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
     QCOMPARE(workspace()->activeClient(), c);
@@ -279,9 +278,9 @@ void ScriptedEffectsTest::testAnimations()
     using namespace KWayland::Client;
     auto *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    auto *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    auto *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
-    shellSurface->setTitle("Window 1");
+    shellSurface->set_title("Window 1");
     auto *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
     QCOMPARE(workspace()->activeClient(), c);
@@ -387,9 +386,9 @@ void ScriptedEffectsTest::testFullScreenEffect()
     using namespace KWayland::Client;
     auto *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    auto *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    auto *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
-    shellSurface->setTitle("Window 1");
+    shellSurface->set_title("Window 1");
     auto *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
     QCOMPARE(workspace()->activeClient(), c);
@@ -451,7 +450,7 @@ void ScriptedEffectsTest::testKeepAlive()
     using namespace KWayland::Client;
     auto *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    auto *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    auto *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     auto *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -497,7 +496,7 @@ void ScriptedEffectsTest::testGrab()
     using namespace KWayland::Client;
     Surface *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     AbstractClient *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -530,7 +529,7 @@ void ScriptedEffectsTest::testGrabAlreadyGrabbedWindow()
     using namespace KWayland::Client;
     Surface *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     AbstractClient *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -567,7 +566,7 @@ void ScriptedEffectsTest::testGrabAlreadyGrabbedWindowForced()
     using namespace KWayland::Client;
     Surface *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     AbstractClient *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -598,7 +597,7 @@ void ScriptedEffectsTest::testUngrab()
     using namespace KWayland::Client;
     Surface *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     AbstractClient *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -641,7 +640,7 @@ void ScriptedEffectsTest::testRedirect()
     using namespace KWayland::Client;
     Surface *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     AbstractClient *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
@@ -719,7 +718,7 @@ void ScriptedEffectsTest::testComplete()
     using namespace KWayland::Client;
     Surface *surface = Test::createSurface(Test::waylandCompositor());
     QVERIFY(surface);
-    XdgShellSurface *shellSurface = Test::createXdgShellStableSurface(surface, surface);
+    Test::XdgToplevel *shellSurface = Test::createXdgToplevelSurface(surface, surface);
     QVERIFY(shellSurface);
     AbstractClient *c = Test::renderAndWaitForShown(surface, QSize(100, 50), Qt::blue);
     QVERIFY(c);
