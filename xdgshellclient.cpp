@@ -1597,7 +1597,7 @@ void XdgToplevelClient::changeMaximize(bool horizontal, bool vertical, bool adju
         workspace()->clientArea(MaximizeArea, this);
 
     const MaximizeMode oldMode = m_requestedMaximizeMode;
-    const QRect oldGeometry = frameGeometry();
+    const QRect oldGeometry = requestedFrameGeometry();
 
     // 'adjust == true' means to update the size only, e.g. after changing workspace size
     if (!adjust) {
@@ -1639,6 +1639,19 @@ void XdgToplevelClient::changeMaximize(bool horizontal, bool vertical, bool adju
         changeMaximizeRecursion = false;
     }
 
+    if (quickTileMode() == QuickTileMode(QuickTileFlag::None)) {
+        QRect savedMaximizeGeometry = geometryRestore();
+        if (!adjust && !(oldMode & MaximizeVertical)) {
+            savedMaximizeGeometry.setTop(oldGeometry.top());
+            savedMaximizeGeometry.setBottom(oldGeometry.bottom());
+        }
+        if (!adjust && !(oldMode & MaximizeHorizontal)) {
+            savedMaximizeGeometry.setLeft(oldGeometry.left());
+            savedMaximizeGeometry.setRight(oldGeometry.right());
+        }
+        setGeometryRestore(savedMaximizeGeometry);
+    }
+
     // Conditional quick tiling exit points
     const auto oldQuickTileMode = quickTileMode();
     if (quickTileMode() != QuickTileMode(QuickTileFlag::None)) {
@@ -1654,33 +1667,61 @@ void XdgToplevelClient::changeMaximize(bool horizontal, bool vertical, bool adju
         }
     }
 
-    if (m_requestedMaximizeMode == MaximizeFull) {
-        setGeometryRestore(oldGeometry);
-        // TODO: Client has more checks
+    // We assume that the restore geometry is valid by the time it's used.
+    const QRect originalGeometry = oldQuickTileMode ? oldGeometry : geometryRestore();
+
+    switch (m_requestedMaximizeMode) {
+    case MaximizeRestore: {
+        QRect targetGeometry = originalGeometry;
+        if (oldMode & MaximizeHorizontal) {
+            targetGeometry.setLeft(geometryRestore().left());
+            targetGeometry.setRight(geometryRestore().right());
+        }
+        if (oldMode & MaximizeVertical) {
+            targetGeometry.setTop(geometryRestore().top());
+            targetGeometry.setBottom(geometryRestore().bottom());
+        }
+        setFrameGeometry(targetGeometry);
+        break; }
+    case MaximizeHorizontal: {
+        QRect targetGeometry;
+        if (oldMode & MaximizeVertical) {
+            targetGeometry.setTop(geometryRestore().top());
+            targetGeometry.setBottom(geometryRestore().bottom());
+        } else {
+            targetGeometry.setTop(originalGeometry.top());
+            targetGeometry.setBottom(originalGeometry.bottom());
+        }
+        targetGeometry.setLeft(clientArea.left());
+        targetGeometry.setRight(clientArea.right());
+        setFrameGeometry(targetGeometry);
+        break; }
+    case MaximizeVertical: {
+        QRect targetGeometry;
+        if (oldMode & MaximizeHorizontal) {
+            targetGeometry.setLeft(geometryRestore().left());
+            targetGeometry.setRight(geometryRestore().right());
+        } else {
+            targetGeometry.setLeft(originalGeometry.left());
+            targetGeometry.setRight(originalGeometry.right());
+        }
+        targetGeometry.setTop(clientArea.top());
+        targetGeometry.setBottom(clientArea.bottom());
+        setFrameGeometry(targetGeometry);
+        break; }
+    case MaximizeFull:
         if (options->electricBorderMaximize()) {
             updateQuickTileMode(QuickTileFlag::Maximize);
         } else {
             updateQuickTileMode(QuickTileFlag::None);
         }
-        if (quickTileMode() != oldQuickTileMode) {
-            doSetQuickTileMode();
-            emit quickTileModeChanged();
-        }
-        setFrameGeometry(workspace()->clientArea(MaximizeArea, this));
-    } else {
-        if (m_requestedMaximizeMode == MaximizeRestore) {
-            updateQuickTileMode(QuickTileFlag::None);
-        }
-        if (quickTileMode() != oldQuickTileMode) {
-            doSetQuickTileMode();
-            emit quickTileModeChanged();
-        }
+        setFrameGeometry(clientArea);
+        break;
+    }
 
-        if (geometryRestore().isValid()) {
-            setFrameGeometry(geometryRestore());
-        } else {
-            setFrameGeometry(workspace()->clientArea(PlacementArea, this));
-        }
+    if (oldQuickTileMode != quickTileMode()) {
+        doSetQuickTileMode();
+        emit quickTileModeChanged();
     }
 
     doSetMaximized();
