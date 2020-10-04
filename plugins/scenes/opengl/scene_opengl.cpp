@@ -38,7 +38,6 @@
 #include "decorations/decoratedclient.h"
 #include <logging.h>
 
-#include <KWaylandServer/buffer_interface.h>
 #include <KWaylandServer/subcompositor_interface.h>
 #include <KWaylandServer/surface_interface.h>
 
@@ -1571,7 +1570,7 @@ static bool needsPixmapUpdate(const OpenGLWindowPixmap *pixmap)
 {
     // That's a regular Wayland client.
     if (pixmap->surface()) {
-        return !pixmap->surface()->trackedDamage().isEmpty();
+        return true;
     }
 
     // That's an internal client with a raster buffer attached.
@@ -1626,14 +1625,6 @@ bool OpenGLWindowPixmap::bind()
 WindowPixmap *OpenGLWindowPixmap::createChild(KWaylandServer::SubSurfaceInterface *subSurface)
 {
     return new OpenGLWindowPixmap(subSurface, this, m_scene);
-}
-
-bool OpenGLWindowPixmap::isValid() const
-{
-    if (!m_texture->isNull()) {
-        return true;
-    }
-    return WindowPixmap::isValid();
 }
 
 //****************************************

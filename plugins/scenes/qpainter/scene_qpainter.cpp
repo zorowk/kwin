@@ -21,7 +21,8 @@
 
 #include <kwineffectquickview.h>
 
-#include <KWaylandServer/buffer_interface.h>
+#include <KWaylandServer/display.h>
+#include <KWaylandServer/rendererinterface.h>
 #include <KWaylandServer/subcompositor_interface.h>
 #include <KWaylandServer/surface_interface.h>
 #include "decorations/decoratedclient.h"
@@ -46,6 +47,10 @@ SceneQPainter *SceneQPainter::createScene(QObject *parent)
     }
     if (backend->isFailed()) {
         return nullptr;
+    }
+    if (waylandServer()) {
+        KWaylandServer::RendererInterface *rendererInterface = waylandServer()->display()->rendererInterface();
+        rendererInterface->setGraphicsApi(KWaylandServer::RendererInterface::GraphicsApi::QPainter);
     }
     return new SceneQPainter(backend.take(), parent);
 }
@@ -372,10 +377,7 @@ void QPainterWindowPixmap::create()
         return;
     }
     // performing deep copy, this could probably be improved
-    m_image = buffer()->data().copy();
-    if (auto s = surface()) {
-        s->resetTrackedDamage();
-    }
+    m_image = buffer().toImage().copy();
 }
 
 WindowPixmap *QPainterWindowPixmap::createChild(KWaylandServer::SubSurfaceInterface *subSurface)
@@ -401,10 +403,7 @@ void QPainterWindowPixmap::update()
         return;
     }
     // perform deep copy
-    m_image = b->data().copy();
-    if (auto s = surface()) {
-        s->resetTrackedDamage();
-    }
+    m_image = b.toImage().copy();
 }
 
 bool QPainterWindowPixmap::isValid() const
