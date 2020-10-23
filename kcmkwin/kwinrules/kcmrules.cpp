@@ -7,6 +7,8 @@
 
 #include "kcmrules.h"
 
+#include "kdeclarative_version.h"
+
 #include <QDBusConnection>
 #include <QDBusMessage>
 
@@ -45,7 +47,9 @@ KCMKWinRules::KCMKWinRules(QObject *parent, const QVariantList &arguments)
         argList << arg.toString();
     }
     parseArguments(argList);
-
+#if KDECLARATIVE_VERSION >= QT_VERSION_CHECK(5, 80, 0)
+    connect(this, &ConfigModule::argumentsUpdated, this, &KCMKWinRules::parseArguments);
+#endif
     connect(m_rulesModel, &RulesModel::descriptionChanged, this, [this]{
         if (m_editIndex.isValid()) {
             m_ruleBookModel->setDescriptionAt(m_editIndex.row(), m_rulesModel->description());
