@@ -551,6 +551,7 @@ set(kwin_SRCS
     x11eventfilter.cpp
     xcbutils.cpp
     xcursortheme.cpp
+    xdgactivationv1.cpp
     xdgshellclient.cpp
     xdgshellintegration.cpp
     xkb.cpp
