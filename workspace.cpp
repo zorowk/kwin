@@ -36,6 +36,7 @@
 #include "rules.h"
 #include "screenedge.h"
 #include "screens.h"
+#include "shuffler.h"
 #include "platform.h"
 #include "scripting/scripting.h"
 #include "syncalarmx11filter.h"
@@ -138,6 +139,8 @@ Workspace::Workspace()
     ApplicationMenu::create(this);
 
     _self = this;
+
+    m_shuffler = new Shuffler(this);
 
 #ifdef KWIN_BUILD_ACTIVITIES
     Activities *activities = nullptr;
@@ -1972,6 +1975,16 @@ void Workspace::checkTransients(xcb_window_t w)
  */
 void Workspace::desktopResized()
 {
+    // The geometry might be changed more than once during the relayout process.
+    std::vector<std::unique_ptr<GeometryUpdatesBlocker>> blockers;
+    blockers.reserve(m_allClients.count());
+    for (AbstractClient *client : qAsConst(m_allClients)) {
+        blockers.emplace_back(std::make_unique<GeometryUpdatesBlocker>(client));
+    }
+
+    // Try to move windows back to their original screens.
+    m_shuffler->shuffle();
+
     QRect geom = screens()->geometry();
     if (rootInfo()) {
         NETSize desktop_geometry;

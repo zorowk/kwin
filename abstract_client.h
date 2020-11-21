@@ -918,6 +918,15 @@ Q_SIGNALS:
     void hasApplicationMenuChanged(bool);
     void applicationMenuActiveChanged(bool);
     void unresponsiveChanged(bool);
+    /**
+     * This signal is emitted when the Client has been explicitly sent to another screen.
+     *
+     * The main difference between the sentToScreen() signal and the screenChanged() signal
+     * is that the latter is emitted when the screen has been changed implicitly, e.g. after
+     * changing the geometry, while the former is emitted when the window has been moved
+     * to another explicitly, e.g. using the user actions menu, etc.
+     */
+    void sentToScreen(int);
 
 protected:
     AbstractClient();

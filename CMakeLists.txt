@@ -526,6 +526,7 @@ set(kwin_SRCS
     scripting/timer.cpp
     scripting/workspace_wrapper.cpp
     shadow.cpp
+    shuffler.cpp
     sm.cpp
     subsurfacemonitor.cpp
     syncalarmx11filter.cpp

@@ -48,6 +48,7 @@ class Group;
 class InternalClient;
 class KillWindow;
 class ShortcutDialog;
+class Shuffler;
 class Toplevel;
 class Unmanaged;
 class UserActionsMenu;
@@ -674,6 +675,8 @@ private:
     QScopedPointer<X11EventFilter> m_syncAlarmFilter;
 
     SessionManager *m_sessionManager;
+    Shuffler *m_shuffler;
+
 private:
     friend bool performTransiencyCheck();
     friend Workspace *workspace();
