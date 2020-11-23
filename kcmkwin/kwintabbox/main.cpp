@@ -459,7 +459,7 @@ void KWinTabBoxConfig::configureEffectClicked()
         KCModule *kcm = nullptr;
 
         KPluginLoader loader(plugins.first().fileName());
-        KPluginFactory* factory = loader.factory();
+        KPluginFactory *factory = loader.factory();
         if (!factory) {
             qWarning() << "Error loading plugin:" << loader.errorString();
         } else {
