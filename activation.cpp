@@ -280,6 +280,9 @@ void Workspace::setActiveClient(AbstractClient* c)
  */
 void Workspace::activateClient(AbstractClient* c, bool force)
 {
+    if (exclusiveClient()) {
+        c = exclusiveClient();
+    }
     if (c == nullptr) {
         focusToNull();
         setActiveClient(nullptr);

@@ -46,8 +46,10 @@ private Q_SLOTS:
     void testFill();
     void testStack();
     void testFocus();
-    void testActivate_data();
-    void testActivate();
+    void testActivateOnDemand_data();
+    void testActivateOnDemand();
+    void testActivateExclusive();
+    void testDeactivate();
     void testUnmap();
 };
 
@@ -465,7 +467,7 @@ void LayerShellV1ClientTest::testFocus()
     QScopedPointer<Test::LayerSurfaceV1> shellSurface(Test::createLayerSurfaceV1(surface.data(), QStringLiteral("test")));
 
     // Set the initial state of the layer surface.
-    shellSurface->set_keyboard_interactivity(1);
+    shellSurface->set_keyboard_interactivity(Test::LayerSurfaceV1::keyboard_interactivity_on_demand);
     shellSurface->set_size(280, 124);
     surface->commit(KWayland::Client::Surface::CommitFlag::None);
 
@@ -488,7 +490,7 @@ void LayerShellV1ClientTest::testFocus()
     QVERIFY(Test::waitForWindowDestroyed(client));
 }
 
-void LayerShellV1ClientTest::testActivate_data()
+void LayerShellV1ClientTest::testActivateOnDemand_data()
 {
     QTest::addColumn<int>("layer");
     QTest::addColumn<bool>("active");
@@ -499,7 +501,7 @@ void LayerShellV1ClientTest::testActivate_data()
     QTest::addRow("background") << int(Test::LayerShellV1::layer_background) << false;
 }
 
-void LayerShellV1ClientTest::testActivate()
+void LayerShellV1ClientTest::testActivateOnDemand()
 {
     // Create a layer shell surface.
     QScopedPointer<KWayland::Client::Surface> surface(Test::createSurface());
@@ -524,12 +526,95 @@ void LayerShellV1ClientTest::testActivate()
     QVERIFY(!client->isActive());
 
     // Try to activate the layer surface.
-    shellSurface->set_keyboard_interactivity(1);
+    shellSurface->set_keyboard_interactivity(Test::LayerSurfaceV1::keyboard_interactivity_on_demand);
     surface->commit(KWayland::Client::Surface::CommitFlag::None);
 
     QSignalSpy activeChangedSpy(client, &AbstractClient::activeChanged);
     QVERIFY(activeChangedSpy.isValid());
     QTEST(activeChangedSpy.wait(1000), "active");
+
+    // Destroy the client.
+    shellSurface.reset();
+    QVERIFY(Test::waitForWindowDestroyed(client));
+}
+
+void LayerShellV1ClientTest::testActivateExclusive()
+{
+    // Create a layer shell surface.
+    QScopedPointer<KWayland::Client::Surface> surface(Test::createSurface());
+    QScopedPointer<Test::LayerSurfaceV1> shellSurface(Test::createLayerSurfaceV1(surface.data(), QStringLiteral("test")));
+
+    // Set the initial state of the layer surface.
+    shellSurface->set_layer(Test::LayerShellV1::layer_top);
+    shellSurface->set_size(280, 124);
+    surface->commit(KWayland::Client::Surface::CommitFlag::None);
+
+    // Wait for the compositor to position the surface.
+    QSignalSpy configureRequestedSpy(shellSurface.data(), &Test::LayerSurfaceV1::configureRequested);
+    QVERIFY(configureRequestedSpy.isValid());
+    QVERIFY(configureRequestedSpy.wait());
+    const QSize requestedSize = configureRequestedSpy.last().at(1).toSize();
+
+    // Map the layer surface.
+    shellSurface->ack_configure(configureRequestedSpy.last().at(0).toUInt());
+    AbstractClient *client = Test::renderAndWaitForShown(surface.data(), requestedSize, Qt::red);
+    QVERIFY(client);
+    QVERIFY(!client->isActive());
+
+    // Try to activate the layer surface.
+    shellSurface->set_keyboard_interactivity(Test::LayerSurfaceV1::keyboard_interactivity_exclusive);
+    surface->commit(KWayland::Client::Surface::CommitFlag::None);
+
+    QSignalSpy activeChangedSpy(client, &AbstractClient::activeChanged);
+    QVERIFY(activeChangedSpy.isValid());
+    QVERIFY(activeChangedSpy.wait());
+
+    // Create another surface, the layer surface should remain focused.
+    QScopedPointer<KWayland::Client::Surface> toplevelSurface(Test::createSurface());
+    QVERIFY(!toplevelSurface.isNull());
+    QScopedPointer<Test::XdgToplevel> xdgTopleveSurface(Test::createXdgToplevelSurface(toplevelSurface.data()));
+    QVERIFY(!xdgTopleveSurface.isNull());
+    AbstractClient *xdgToplevel = Test::renderAndWaitForShown(toplevelSurface.data(), QSize(100, 50), Qt::blue);
+    QVERIFY(xdgToplevel);
+    QVERIFY(!xdgToplevel->isActive());
+    QVERIFY(client->isActive());
+
+    // Destroy the client.
+    shellSurface.reset();
+    QVERIFY(Test::waitForWindowDestroyed(client));
+}
+
+void LayerShellV1ClientTest::testDeactivate()
+{
+    // Create a layer shell surface.
+    QScopedPointer<KWayland::Client::Surface> surface(Test::createSurface());
+    QScopedPointer<Test::LayerSurfaceV1> shellSurface(Test::createLayerSurfaceV1(surface.data(), QStringLiteral("test")));
+
+    // Set the initial state of the layer surface.
+    shellSurface->set_keyboard_interactivity(Test::LayerSurfaceV1::keyboard_interactivity_on_demand);
+    shellSurface->set_size(280, 124);
+    surface->commit(KWayland::Client::Surface::CommitFlag::None);
+
+    // Wait for the compositor to position the surface.
+    QSignalSpy configureRequestedSpy(shellSurface.data(), &Test::LayerSurfaceV1::configureRequested);
+    QVERIFY(configureRequestedSpy.isValid());
+    QVERIFY(configureRequestedSpy.wait());
+    const QSize requestedSize = configureRequestedSpy.last().at(1).toSize();
+
+    // Map the layer surface.
+    shellSurface->ack_configure(configureRequestedSpy.last().at(0).toUInt());
+    AbstractClient *client = Test::renderAndWaitForShown(surface.data(), requestedSize, Qt::red);
+    QVERIFY(client);
+    QVERIFY(client->isActive());
+
+    // Try to deactivate the layer surface.
+    shellSurface->set_keyboard_interactivity(Test::LayerSurfaceV1::keyboard_interactivity_none);
+    surface->commit(KWayland::Client::Surface::CommitFlag::None);
+
+    QSignalSpy activeChangedSpy(client, &AbstractClient::activeChanged);
+    QVERIFY(activeChangedSpy.isValid());
+    QVERIFY(activeChangedSpy.wait());
+    QVERIFY(!client->isActive());
 
     // Destroy the client.
     shellSurface.reset();

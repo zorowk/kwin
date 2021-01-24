@@ -37,6 +37,10 @@ LayerShellV1Integration::LayerShellV1Integration(QObject *parent)
     connect(m_rearrangeTimer, &QTimer::timeout, this, &LayerShellV1Integration::rearrange);
 }
 
+LayerShellV1Integration::~LayerShellV1Integration()
+{
+}
+
 void LayerShellV1Integration::createClient(LayerSurfaceV1Interface *shellSurface)
 {
     AbstractOutput *output = waylandServer()->findOutput(shellSurface->output());
@@ -205,12 +209,102 @@ void LayerShellV1Integration::rearrange()
         rearrangeOutput(output);
     }
 
+    if (!handleActivateExclusive()) {
+        handleActivateOnDemand();
+    }
+    handleDeactivate();
+
+    m_activateQueue.clear();
+    m_deactivateQueue.clear();
+
     workspace()->updateClientArea();
 }
 
 void LayerShellV1Integration::scheduleRearrange()
 {
     m_rearrangeTimer->start();
+}
+
+void LayerShellV1Integration::handleDeactivate()
+{
+    for (auto it = m_deactivateQueue.crbegin(); it != m_deactivateQueue.crend(); ++it) {
+        LayerShellV1Client *client = *it;
+        if (!client) {
+            continue;
+        }
+        if (client->isActive()) {
+            workspace()->activateNextClient(client);
+        }
+        return;
+    }
+}
+
+bool LayerShellV1Integration::handleActivateExclusive()
+{
+    const QList<Toplevel *> windows = workspace()->stackingOrder();
+
+    for (auto it = windows.crbegin(); it != windows.crend(); ++it) {
+        auto client = qobject_cast<LayerShellV1Client *>(*it);
+        if (!client) {
+            continue;
+        }
+        if (client->shellSurface()->keyboardInteractivity() !=
+                LayerSurfaceV1Interface::KeyboardInteractivity::Exclusive) {
+            continue;
+        }
+        switch (client->shellSurface()->layer()) {
+        case LayerSurfaceV1Interface::OverlayLayer:
+        case LayerSurfaceV1Interface::TopLayer:
+            workspace()->activateExclusiveClient(client);
+            return true;
+        case LayerSurfaceV1Interface::BottomLayer:
+        case LayerSurfaceV1Interface::BackgroundLayer:
+            break;
+        }
+    }
+
+    workspace()->activateExclusiveClient(nullptr);
+    return false;
+}
+
+void LayerShellV1Integration::handleActivateOnDemand()
+{
+    for (auto it = m_activateQueue.crbegin(); it != m_activateQueue.crend(); ++it) {
+        LayerShellV1Client *client = *it;
+        if (!client) {
+            continue;
+        }
+        switch (client->shellSurface()->layer()) {
+        case LayerSurfaceV1Interface::OverlayLayer:
+        case LayerSurfaceV1Interface::TopLayer:
+            if (client->wantsInput()) {
+                workspace()->activateClient(client);
+                return;
+            }
+            break;
+        case LayerSurfaceV1Interface::BottomLayer:
+        case LayerSurfaceV1Interface::BackgroundLayer:
+            break;
+        }
+    }
+}
+
+void LayerShellV1Integration::scheduleActivate(LayerShellV1Client *client)
+{
+    m_activateQueue.removeOne(client);
+    m_activateQueue.append(client);
+    m_deactivateQueue.removeOne(client);
+
+    scheduleRearrange();
+}
+
+void LayerShellV1Integration::scheduleDeactivate(LayerShellV1Client *client)
+{
+    m_deactivateQueue.removeOne(client);
+    m_deactivateQueue.append(client);
+    m_activateQueue.removeOne(client);
+
+    scheduleRearrange();
 }
 
 } // namespace KWin

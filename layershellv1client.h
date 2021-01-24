@@ -53,7 +53,7 @@ private:
     void handleSizeChanged();
     void handleUnmapped();
     void handleCommitted();
-    void handleAcceptsFocusChanged();
+    void handleKeyboardInteractivityChanged();
     void handleOutputEnabledChanged();
     void handleOutputDestroyed();
     void scheduleRearrange();

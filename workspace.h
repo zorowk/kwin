@@ -18,6 +18,7 @@
 #include "sm.h"
 #include "utils.h"
 // Qt
+#include <QPointer>
 #include <QTimer>
 #include <QVector>
 // std
@@ -165,6 +166,10 @@ public:
      */
     AbstractClient* activeClient() const;
     /**
+     * Returns the window that must be active even if user clicks another window.
+     */
+    AbstractClient *exclusiveClient() const;
+    /**
      * Client that was activated, but it's not yet really activeClient(), because
      * we didn't process yet the matching FocusIn event. Used mostly in focus
      * stealing prevention code.
@@ -174,6 +179,7 @@ public:
     AbstractClient* clientUnderMouse(int screen) const;
 
     void activateClient(AbstractClient*, bool force = false);
+    void activateExclusiveClient(AbstractClient *client);
     bool requestFocus(AbstractClient* c, bool force = false);
     enum ActivityFlag {
         ActivityFocus = 1 << 0, // focus the window
@@ -593,6 +599,7 @@ private:
     AbstractClient* last_active_client;
     AbstractClient* most_recently_raised; // Used ONLY by raiseOrLowerClient()
     AbstractClient* movingClient;
+    QPointer<AbstractClient> m_exclusiveClient;
 
     // Delay(ed) window focus timer and client
     QTimer* delayFocusTimer;

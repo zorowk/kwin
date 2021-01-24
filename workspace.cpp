@@ -2817,4 +2817,18 @@ void Workspace::fixPositionAfterCrash(xcb_window_t w, const xcb_get_geometry_rep
     }
 }
 
+AbstractClient *Workspace::exclusiveClient() const
+{
+    return m_exclusiveClient;
+}
+
+void Workspace::activateExclusiveClient(AbstractClient *client)
+{
+    m_exclusiveClient = client;
+
+    if (client) {
+        activateClient(client);
+    }
+}
+
 } // namespace

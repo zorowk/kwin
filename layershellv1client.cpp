@@ -80,8 +80,8 @@ LayerShellV1Client::LayerShellV1Client(LayerSurfaceV1Interface *shellSurface,
             this, &LayerShellV1Client::scheduleRearrange);
     connect(shellSurface, &LayerSurfaceV1Interface::exclusiveZoneChanged,
             this, &LayerShellV1Client::scheduleRearrange);
-    connect(shellSurface, &LayerSurfaceV1Interface::acceptsFocusChanged,
-            this, &LayerShellV1Client::handleAcceptsFocusChanged);
+    connect(shellSurface, &LayerSurfaceV1Interface::keyboardInteractivityChanged,
+            this, &LayerShellV1Client::handleKeyboardInteractivityChanged);
 }
 
 LayerSurfaceV1Interface *LayerShellV1Client::shellSurface() const
@@ -215,7 +215,7 @@ Layer LayerShellV1Client::belongsToLayer() const
 
 bool LayerShellV1Client::acceptsFocus() const
 {
-    return m_shellSurface->acceptsFocus();
+    return m_shellSurface->keyboardInteractivity() != LayerSurfaceV1Interface::KeyboardInteractivity::None;
 }
 
 void LayerShellV1Client::requestGeometry(const QRect &rect)
@@ -243,17 +243,15 @@ void LayerShellV1Client::handleCommitted()
     }
 }
 
-void LayerShellV1Client::handleAcceptsFocusChanged()
+void LayerShellV1Client::handleKeyboardInteractivityChanged()
 {
-    switch (m_shellSurface->layer()) {
-    case LayerSurfaceV1Interface::TopLayer:
-    case LayerSurfaceV1Interface::OverlayLayer:
-        if (wantsInput()) {
-            workspace()->activateClient(this);
-        }
+    switch (m_shellSurface->keyboardInteractivity()) {
+    case LayerSurfaceV1Interface::KeyboardInteractivity::None:
+        m_integration->scheduleDeactivate(this);
         break;
-    case LayerSurfaceV1Interface::BackgroundLayer:
-    case LayerSurfaceV1Interface::BottomLayer:
+    case LayerSurfaceV1Interface::KeyboardInteractivity::Exclusive:
+    case LayerSurfaceV1Interface::KeyboardInteractivity::OnDemand:
+        m_integration->scheduleActivate(this);
         break;
     }
 }
