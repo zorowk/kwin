@@ -125,6 +125,7 @@ ApplicationWayland::ApplicationWayland(int &argc, char **argv)
 ApplicationWayland::~ApplicationWayland()
 {
     setTerminating();
+    stopInputMethod();
     if (!waylandServer()) {
         return;
     }
@@ -242,7 +243,7 @@ void ApplicationWayland::stopInputMethod()
 void ApplicationWayland::startInputMethod(const QString &executable)
 {
     stopInputMethod();
-    if (executable.isEmpty()) {
+    if (executable.isEmpty() || isTerminating()) {
         return;
     }
 
